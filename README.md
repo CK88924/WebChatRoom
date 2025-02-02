@@ -9,8 +9,8 @@
 - 📂 Firebase Firestore 數據存儲
 
 ## 📦 開發環境
-1. **Eclipse IDE**
-2. **Spring Boot (Spring Boot Starter Template)**
+1. **Eclipse IDE**[Spring Boot install](https://ithelp.ithome.com.tw/m/articles/10214203)
+2. **Spring Boot (Spring Boot Starter Template)**[JDK8](https://blog.csdn.net/weixin_67793092/article/details/134645650)
 3. **Firebase Firestore Database**
 4. **Google 第三方登入**
 
@@ -52,6 +52,7 @@ chatId 遞增 timestamp 遞增
 1. `messages` collection 目前允許所有人讀寫，可能導致：
    - 隱私問題：任何人都能讀取聊天室內容
    - 資安風險：外部攻擊者可寫入惡意訊息
+2. 主要用MVCS架構但設計不甚理想存在一定耦合性
 
 ## ✅ 改進建議：
 ### **1. messages collection 的權限強化**
