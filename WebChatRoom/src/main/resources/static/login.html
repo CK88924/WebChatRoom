@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div id="login-card" class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
+            <div class="card-body text-center">
+                <h2 class="card-title mb-4">Login</h2>
+                <button id="google-login-btn" class="btn btn-primary w-100">Login with Google</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+        // 動態加載 Firebase 配置
+        fetch('/firebase-config.json') // 確保後端正確提供此文件
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("無法加載 Firebase 配置文件！");
+                }
+                return response.json();
+            })
+            .then(firebaseConfig => {
+                // 初始化 Firebase
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth();
+
+                console.log("Firebase 初始化成功：", app);
+
+                // Google 登錄邏輯
+                document.getElementById("google-login-btn").addEventListener("click", async () => {
+                    const provider = new GoogleAuthProvider();
+
+                    try {
+                        const result = await signInWithPopup(auth, provider);
+                        const user = result.user;
+                        const idToken = await user.getIdToken(); // 獲取 Firebase ID Token
+
+                        console.log("Google 登錄成功");
+
+                        // 發送 ID Token 到後端進行驗證
+                        const response = await fetch("/auth/verify", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ idToken: idToken })
+                        });
+
+                        if (response.redirected) {
+                            // 自動跳轉到後端返回的頁面
+                            window.location.href = response.url;
+                        } else if (!response.ok) {
+                            const errorMsg = await response.text();
+                            alert(`身份驗證失敗: ${errorMsg}`);
+                        } else {
+                            console.warn("後端未返回重定向 URL，也未明確失敗");
+                        }
+                    } catch (error) {
+                        console.error("登錄失敗：", error.message);
+                        alert("登錄失敗，請重試！");
+                    }
+                });
+            })
+            .catch(error => {
+                console.error("無法初始化 Firebase：", error.message);
+            });
+    </script>
+</body>
+</html>
