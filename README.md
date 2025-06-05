@@ -93,8 +93,8 @@ service firebase.storage {
 ```
 ## 成果影片
 [成果影片](https://youtu.be/TeeBbP5ke-Y)
-![圖片發送](images/圖片發送.jpg)
-![圖加文發送](images/圖加文發送.jpg)
+![圖片發送](images/圖片發送.JPG)
+![圖加文發送](images/圖加文發送.JPG)
 
 ## 小提醒
 1. 經測試當網頁a.target ="_blank"時Firebase Authentication 狀態似乎無法保持所以如需用到uid等參數需在該分頁重新登入
