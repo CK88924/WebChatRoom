@@ -5,8 +5,11 @@
 ## 🚀 功能
 - 📢 即時聊天
 - 👥 群組聊天室
+- 🖼️ 發送圖片
 - 🔐 Google OAuth 登入
 - 📂 Firebase Firestore 數據存儲
+- ☁️ Firebase Storage 多媒體類型存儲
+
 
 ## 📦 開發環境
 1. **Eclipse IDE**[Spring Boot install](https://ithelp.ithome.com.tw/m/articles/10214203)
@@ -55,7 +58,7 @@ chatId 遞增 timestamp 遞增
 2. 主要用MVCS架構但設計不甚理想存在一定耦合性
 
 ## ✅ 改進建議：
-### **1. messages collection 的權限強化**
+### **1. messages collection Storage 的權限強化**
 **目前規則 (不安全，所有人可讀寫)**
 ```Firebase 安全規則
 rules_version = '2';
@@ -76,9 +79,22 @@ service cloud.firestore {
     }
   }
 }
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /chat_images/{imagePath=**} {
+      allow write: if true;
+      allow read: if true;
+    }
+  }
+}
+
 ```
 ## 成果影片
 [成果影片](https://youtu.be/TeeBbP5ke-Y)
+![圖片發送](images/圖片發送.jpg)
+![圖加文發送](images/圖加文發送.jpg)
 
 ## 小提醒
 1. 經測試當網頁a.target ="_blank"時Firebase Authentication 狀態似乎無法保持所以如需用到uid等參數需在該分頁重新登入
